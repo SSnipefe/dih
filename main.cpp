@@ -1,3 +1,8 @@
+/*
+I use iostream to allow inputs and outputs through the console. here are the docs: https://en.cppreference.com/cpp/header/iostream
+I use vector to represent a list. Docs: https://en.cppreference.com/cpp/container/vector
+Developed with cpp.sh
+*/
 #include <iostream>
 #include <vector>
 
@@ -12,17 +17,16 @@ private:
         return true;
     }
 
-    // -1:X 1:O 0:Tie 2:None (game not finished)
     int winner() const {
         const int wins[8][3] = {
-            {0, 1, 2}, // Row 1
-            {3, 4, 5}, // Row 2
-            {6, 7, 8}, // Row 3
-            {0, 3, 6}, // Col 1
-            {1, 4, 7}, // Col 2
-            {2, 5, 8}, // Col 3
-            {0, 4, 8}, // Diagonal
-            {2, 4, 6}  // Diagonal
+            {0, 1, 2}, 
+            {3, 4, 5},
+            {6, 7, 8},
+            {0, 3, 6}, 
+            {1, 4, 7},
+            {2, 5, 8},
+            {0, 4, 8}
+            {2, 4, 6}
         };
 
         for (const auto &w : wins) {
@@ -34,16 +38,14 @@ private:
             }
         }
 
-        if (!filled()) return 2; // game not finished
-        return 0;                // tie
+        if (!filled()) return 2;
+        return 0;
     }
 
-    // minimax dfs
+
     int dfs(char player) {
         int w = winner();
-        if (w != 2) return w; // terminal state
-
-        // X is minimizing, O is maximizing
+        if (w != 2) return w; 
         int best = (player == 'X') ? 2 : -2;
         int current;
 
@@ -54,9 +56,9 @@ private:
                 grid[i] = ' ';
 
                 if (player == 'X') {
-                    if (current < best) best = current;   // minimize
+                    if (current < best) best = current;
                 } else {
-                    if (current > best) best = current;   // maximize
+                    if (current > best) best = current;
                 }
             }
         }
@@ -64,15 +66,14 @@ private:
     }
 
 public:
-    // best move for O (AI)
     int bestmoveO() {
         int bestIdx = -1;
-        int bestScore = -2; // worse than worst
+        int bestScore = -2;
 
         for (int i = 0; i < 9; ++i) {
             if (grid[i] == ' ') {
                 grid[i] = 'O';
-                int score = dfs('X');   // X plays next
+                int score = dfs('X');
                 grid[i] = ' ';
 
                 if (score > bestScore) {
@@ -116,7 +117,7 @@ int main() {
     std::cout << "You are x, computer is 0\n";
     std::cout << "Enter pos: 1-9:\n";
 
-    bool humanTurn = true; // X starts
+    bool humanTurn = true;
 
     while (true) {
         g.print();
@@ -133,8 +134,6 @@ int main() {
             int pos;
             std::cout << "Move 1-9: ";
             std::cin >> pos;
-
-            // convert 1-9 -> 0-8
             int idx = pos - 1;;
             if (!g.playMove(idx, human)) {
                 std::cout << "Invalid\n";
@@ -143,7 +142,6 @@ int main() {
         } else {
             int move = g.bestmoveO();
             if (move == -1) {
-                // no moves
                 break;
             }
             g.playMove(move, ai);
